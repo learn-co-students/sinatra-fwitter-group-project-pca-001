@@ -1,13 +1,13 @@
 class TweetsController < ApplicationController
 
   get "/tweets" do
-    redirect to("/login") unless session[:user_id].present?
+    redirect to("/login") unless logged_in?
     @tweets = Tweet.all
     erb :"tweets/index"
   end
 
   get "/tweets/new" do
-    redirect to("/login") unless session[:user_id].present?
+    redirect to("/login") unless logged_in?
 
     erb :"tweets/new"
   end
@@ -16,20 +16,20 @@ class TweetsController < ApplicationController
     if params[:content].empty?
       redirect to "/tweets/new"
     else
-      Tweet.create(content: params[:content], user: Helpers.current_user(session))
+      Tweet.create(content: params[:content], user: current_user)
 
       redirect to("/tweets")
     end
   end
 
   get "/tweets/:id" do
-    redirect to("/login") unless session[:user_id].present?
+    redirect to("/login") unless logged_in?
     @tweet = Tweet.find(params[:id])
     erb :"/tweets/show"
   end
 
   get "/tweets/:id/edit" do
-    redirect to("/login") unless session[:user_id].present?
+    redirect to("/login") unless logged_in?
     @tweet = Tweet.find(params[:id])
     erb :"/tweets/edit"
   end
@@ -45,9 +45,9 @@ class TweetsController < ApplicationController
   end
 
   delete "/tweets/:id" do
-    redirect to("/login") unless session[:user_id].present?
+    redirect to("/login") unless logged_in?
     tweet = Tweet.find(params[:id])
-    redirect to "/tweets/#{tweet.id}" unless Helpers.current_user(session) == tweet.user
+    redirect to "/tweets/#{tweet.id}" unless current_user == tweet.user
     tweet.destroy
     erb :"/tweets/index"
   end
