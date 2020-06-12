@@ -1,0 +1,8 @@
+<h1><%= @user.username %>'s profile </h1>
+
+<h3> Tweets </h3>
+<% @user.tweets.each do |tweet| %>
+  <%= tweet.content %><br>
+<% end %>
+
+<br><br>
